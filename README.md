@@ -1,3 +1,3 @@
 # ts
 
-Twitter Search CLI Tool
+Twitter Search CLI
