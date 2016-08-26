@@ -1,5 +1,7 @@
 # ts
 
+![Screen Shot](screenshot.png)
+
 Twitter Search CLI
 
 ## Install

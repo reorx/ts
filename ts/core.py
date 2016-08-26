@@ -33,12 +33,15 @@ class TwitterAPI(object):
     def _get_url(self, name):
         return self.base_url + self.uris[name]
 
-    def search(self, query, count=None):
+    def search(self, query, count=None, lang=None):
         params = {
             'q': query,
         }
         if count is not None:
             params['count'] = count
+        if lang is not None:
+            params['lang'] = lang
+
         resp = self._request('get', self._get_url('search'), params=params)
         # TODO error handling
         return resp
@@ -143,7 +146,8 @@ def main():
     parser.add_argument('--init', action='store_true', help="init config file")
     parser.add_argument('-a', '--auth', action='store_true', help="make authentication with twitter")
     parser.add_argument('-c', '--count', type=int, default=50, help="result count")
-    parser.add_argument('-l', '--link', action='store_true', help="append link with tweet (not implemented)")
+    parser.add_argument('-l', '--lang', type=str, help="filter tweet language")
+    parser.add_argument('--link', action='store_true', help="append link with tweet (not implemented)")
     parser.add_argument('-d', '--debug', action='store_true', help="enable debug log")
 
     args = parser.parse_args()
@@ -173,5 +177,5 @@ def main():
         config['consumer_key'], config['consumer_secret'],
         config['oauth_token'], config['oauth_token_secret'])
 
-    resp = api.search(args.query, args.count)
+    resp = api.search(args.query, count=args.count, lang=args.lang)
     show_search_result(resp.json())
