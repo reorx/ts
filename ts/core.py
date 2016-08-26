@@ -1,17 +1,14 @@
 # coding: utf-8
 
-import json
 import arrow
 import logging
 import argparse
 import requests
 from requests_oauthlib import OAuth1
-from .auth import cli_oauth
-from .config import init_config, get_config, ConfigError
+from .auth import get_oauth_token
+from .config import init_config, get_config, ConfigError, update_oauth_token
 from .utils import ObjectDict, unicode_format, quit
-
-
-lg = logging.getLogger('ts')
+from .log import lg
 
 
 class TwitterAPI(object):
@@ -157,13 +154,19 @@ def main():
         init_config()
         quit('', 0)
 
-    # cli_oauth()
     try:
         config = get_config()
     except ConfigError as e:
         quit(str(e))
 
     lg.debug('config: {}'.format(config))
+
+    if args.auth or ('oauth_token' not in config or 'oauth_token_secret' not in config):
+        otoken, osecret = get_oauth_token()
+        update_oauth_token(config, otoken, osecret)
+
+    if not args.query:
+        quit('', 0)
 
     api = TwitterAPI(
         config['consumer_key'], config['consumer_secret'],

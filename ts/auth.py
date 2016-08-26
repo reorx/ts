@@ -3,13 +3,14 @@
 import urlparse
 import oauth2 as oauth
 from .config import get_config
+from .log import lg
 
 
 class OauthError(Exception):
     pass
 
 
-def cli_oauth():
+def get_oauth_token():
     config = get_config()
 
     consumer_key = config['consumer_key']
@@ -28,21 +29,15 @@ def cli_oauth():
         raise OauthError('Invalid response {}.'.format(resp['status']))
 
     request_token = dict(urlparse.parse_qsl(content))
-
-    print 'Request Token:'
-    print '    - oauth_token        = %s' % request_token['oauth_token']
-    print '    - oauth_token_secret = %s' % request_token['oauth_token_secret']
-    print
+    lg.debug('Request token (oauth_token, oauth_token_secret): %s, %s',
+             request_token['oauth_token'], request_token['oauth_token_secret'])
 
     # Step 2: Redirect to the provider
     print 'Go to the following link in your browser:'
     print '%s?oauth_token=%s' % (authorize_url, request_token['oauth_token'])
     print
 
-    accepted = 'n'
-    while accepted.lower() == 'n':
-        accepted = raw_input('Have you authorized me? (y/n) ')
-    oauth_verifier = raw_input('What is the PIN? ')
+    oauth_verifier = raw_input('Enter PIN: ')
 
     # Step 3: get access token & secret
     token = oauth.Token(
@@ -57,10 +52,8 @@ def cli_oauth():
     access_secret = access_token['oauth_token_secret']
 
     print 'Access Token:'
-    print '    - oauth_token        = %s' % access_key
-    print '    - oauth_token_secret = %s' % access_secret
-    print
-    print 'You may now access protected resources using the access tokens above.'
+    print '  - oauth_token        = %s' % access_key
+    print '  - oauth_token_secret = %s' % access_secret
     print
 
     return access_key, access_secret

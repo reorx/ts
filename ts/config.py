@@ -53,7 +53,19 @@ def init_config():
         'consumer_secret': csecret,
     }
 
+    filepath = write_config(d)
+    print 'Config was wrote to {}'.format(filepath)
+
+
+def write_config(d):
     filepath = get_config_path()
     with open(filepath, 'w') as f:
         f.write(json.dumps(d, indent=4))
-    print 'Config was wrote to {}'.format(filepath)
+    return filepath
+
+
+def update_oauth_token(config, otoken, osecret):
+    config['oauth_token'] = otoken
+    config['oauth_token_secret'] = osecret
+    write_config(config)
+    print 'Config file updated'
