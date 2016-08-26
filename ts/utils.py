@@ -39,7 +39,7 @@ def unicode_format(fmt, **kwargs):
     return to_unicode(fmt).format(**new_kwargs)
 
 
-def quit(s, code):
+def quit(s, code=1):
     print s
     sys.exit(code)
 

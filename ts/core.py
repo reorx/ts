@@ -7,8 +7,8 @@ import argparse
 import requests
 from requests_oauthlib import OAuth1
 from .auth import cli_oauth
-from .config import get_config
-from .utils import ObjectDict, unicode_format
+from .config import init_config, get_config, ConfigError
+from .utils import ObjectDict, unicode_format, quit
 
 
 lg = logging.getLogger('ts')
@@ -139,9 +139,10 @@ def main():
     parser = argparse.ArgumentParser(description="", epilog="", formatter_class=argparse.RawDescriptionHelpFormatter)
 
     # arguments
-    parser.add_argument('query', metavar="QUERY", type=str, help="")
+    parser.add_argument('query', metavar="QUERY", type=str, nargs='?', help="")
 
     # options
+    parser.add_argument('--init', action='store_true', help="")
     parser.add_argument('-a', '--auth', action='store_true', help="")
     parser.add_argument('-c', '--count', type=int, default=50, help="")
     parser.add_argument('-l', '--link', action='store_true', help="")
@@ -152,8 +153,16 @@ def main():
     if args.debug:
         logging.basicConfig(level=logging.DEBUG)
 
+    if args.init:
+        init_config()
+        quit('', 0)
+
     # cli_oauth()
-    config = get_config()
+    try:
+        config = get_config()
+    except ConfigError as e:
+        quit(str(e))
+
     lg.debug('config: {}'.format(config))
 
     api = TwitterAPI(
