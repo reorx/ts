@@ -1,6 +1,7 @@
 # coding: utf-8
 
 import json
+import arrow
 import logging
 import argparse
 import requests
@@ -8,6 +9,9 @@ from requests_oauthlib import OAuth1
 from .auth import cli_oauth
 from .config import get_config
 from .utils import ObjectDict, unicode_format
+
+
+lg = logging.getLogger('ts')
 
 
 class TwitterAPI(object):
@@ -114,13 +118,20 @@ def show_tweet(d):
     """
     t = ObjectDict(d['data'])
     u = ObjectDict(t['user'])
-    fmt = u'{screen_name}: {text}'
+    fmt = u'{screen_name} {created_at}  {text}'
     s = unicode_format(
         fmt,
         screen_name=u.screen_name,
+        created_at=format_time(t.created_at),
         text=t.text,
     )
     print s.encode('utf8')
+
+
+def format_time(s, timezone='Asia/Shanghai'):
+    dt = arrow.get(s, 'ddd MMM DD HH:mm:ss Z YYYY')
+    dt.to(timezone)
+    return dt.format('YYYY/MM/DD HH:mm')
 
 
 def main():
@@ -131,17 +142,20 @@ def main():
     parser.add_argument('query', metavar="QUERY", type=str, help="")
 
     # options
-    parser.add_argument('-c', '--count', type=int, default=50, help="")
     parser.add_argument('-a', '--auth', action='store_true', help="")
+    parser.add_argument('-c', '--count', type=int, default=50, help="")
+    parser.add_argument('-l', '--link', action='store_true', help="")
     parser.add_argument('-d', '--debug', action='store_true', help="")
 
     args = parser.parse_args()
 
-    # logging.basicConfig(level=logging.DEBUG)
+    if args.debug:
+        logging.basicConfig(level=logging.DEBUG)
 
     # cli_oauth()
     config = get_config()
-    # print 'config', config
+    lg.debug('config: {}'.format(config))
+
     api = TwitterAPI(
         config['consumer_key'], config['consumer_secret'],
         config['oauth_token'], config['oauth_token_secret'])
