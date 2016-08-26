@@ -134,17 +134,17 @@ def format_time(s, timezone='Asia/Shanghai'):
 
 def main():
     # the `formatter_class` can make description & epilog show multiline
-    parser = argparse.ArgumentParser(description="", epilog="", formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser = argparse.ArgumentParser(description="Twitter Search CLI", epilog="", formatter_class=argparse.RawDescriptionHelpFormatter)
 
     # arguments
-    parser.add_argument('query', metavar="QUERY", type=str, nargs='?', help="")
+    parser.add_argument('query', metavar="QUERY", type=str, nargs='?', help="search query, see: https://dev.twitter.com/rest/public/search")
 
     # options
-    parser.add_argument('--init', action='store_true', help="")
-    parser.add_argument('-a', '--auth', action='store_true', help="")
-    parser.add_argument('-c', '--count', type=int, default=50, help="")
-    parser.add_argument('-l', '--link', action='store_true', help="")
-    parser.add_argument('-d', '--debug', action='store_true', help="")
+    parser.add_argument('--init', action='store_true', help="init config file")
+    parser.add_argument('-a', '--auth', action='store_true', help="make authentication with twitter")
+    parser.add_argument('-c', '--count', type=int, default=50, help="result count")
+    parser.add_argument('-l', '--link', action='store_true', help="append link with tweet (not implemented)")
+    parser.add_argument('-d', '--debug', action='store_true', help="enable debug log")
 
     args = parser.parse_args()
 
