@@ -2,3 +2,4 @@ oauth2
 requests
 requests-oauthlib
 arrow
+fabulous
