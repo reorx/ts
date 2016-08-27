@@ -8,6 +8,15 @@ from setuptools import setup, find_packages
 version = '0.2.1'
 
 
+def get_requires():
+    try:
+        with open('requirements.txt', 'r') as f:
+            requires = [i for i in map(lambda x: x.strip(), f.readlines()) if i]
+        return requires
+    except IOError:
+        return []
+
+
 def get_long_description():
     try:
         with open('README.md', 'r') as f:
@@ -29,13 +38,7 @@ setup(
     packages=find_packages(),
     # Or if it's a single file package
     #py_modules=['project_sketch'],
-    install_requires=[
-        'oauth2',
-        'requests',
-        'arrow',
-        'fabulous',
-        'requests_oauthlib',
-    ],
+    install_requires=get_requires(),
     # package_data={}
     entry_points={
         'console_scripts': ['ts = ts.core:main']

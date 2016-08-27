@@ -1,6 +1,7 @@
 # coding: utf-8
 
 import sys
+from dateutil import tz, parser
 
 
 PY3 = sys.version_info >= (3,)
@@ -30,6 +31,16 @@ def unicode_format(fmt, **kwargs):
 def quit(s, code=1):
     print s
     sys.exit(code)
+
+
+def format_time(s, fmt='%Y/%m/%d %H:%M', timezone=None):
+    dt = parser.parse(s)
+    if timezone:
+        tzo = tz.gettz()
+    else:
+        tzo = tz.gettz(timezone)
+    localdt = dt.astimezone(tzo)
+    return localdt.strftime(fmt)
 
 
 class ObjectDict(dict):

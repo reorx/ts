@@ -1,5 +1,5 @@
 oauth2
 requests
 requests_oauthlib
-arrow
 fabulous
+dateutil

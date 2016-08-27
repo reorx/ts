@@ -1,6 +1,5 @@
 # coding: utf-8
 
-import arrow
 import logging
 import argparse
 import requests
@@ -8,7 +7,7 @@ from fabulous import color
 from requests_oauthlib import OAuth1
 from .auth import get_oauth_token
 from .config import init_config, get_config, ConfigError, update_oauth_token
-from .utils import ObjectDict, unicode_format, quit
+from .utils import ObjectDict, unicode_format, quit, format_time
 from .log import lg
 
 
@@ -34,6 +33,9 @@ class TwitterAPI(object):
         return self.base_url + self.uris[name]
 
     def search(self, query, count=None, lang=None):
+        # See twitter docs for query parameters:
+        # https://dev.twitter.com/rest/public/search
+        # https://dev.twitter.com/rest/public/timelines
         params = {
             'q': query,
         }
@@ -127,12 +129,6 @@ def show_tweet(d):
         text=t.text,
     )
     print s.encode('utf8')
-
-
-def format_time(s, timezone='Asia/Shanghai'):
-    dt = arrow.get(s, 'ddd MMM DD HH:mm:ss Z YYYY')
-    dt.to(timezone)
-    return dt.format('YYYY/MM/DD HH:mm')
 
 
 def main():
