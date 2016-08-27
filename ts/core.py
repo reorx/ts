@@ -3,12 +3,12 @@
 import logging
 import argparse
 import requests
-from fabulous import color
 from requests_oauthlib import OAuth1
 from .auth import get_oauth_token
 from .config import init_config, get_config, ConfigError, update_oauth_token
 from .utils import ObjectDict, unicode_format, quit, format_time
 from .log import lg
+from . import color
 
 
 class TwitterAPI(object):
@@ -124,7 +124,7 @@ def show_tweet(d):
     fmt = u'{created_at} {screen_name}  {text}'
     s = unicode_format(
         fmt,
-        created_at=color.fg256('#aaa', format_time(t.created_at)),
+        created_at=color.fg256('aaa', format_time(t.created_at)),
         screen_name=color.blue(u.screen_name),
         text=t.text,
     )
