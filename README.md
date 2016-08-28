@@ -33,3 +33,25 @@ Here are some common search query examples:
 2. Find what people said to a person in a topic:
 
         ts '#Hearthstone to:bdbrode'
+
+For more options please see `ts -h`:
+
+```
+usage: ts [-h] [--init] [-a] [-c COUNT] [-l LANG] [--link] [-d] [QUERY]
+
+Twitter Search CLI
+
+positional arguments:
+  QUERY                 search query, see:
+                        https://dev.twitter.com/rest/public/search
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --init                init config file
+  -a, --auth            make authentication with twitter
+  -c COUNT, --count COUNT
+                        result count
+  -l LANG, --lang LANG  filter tweet language
+  --link                append link with tweet (not implemented)
+  -d, --debug           enable debug log
+```
