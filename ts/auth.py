@@ -1,8 +1,8 @@
 # coding: utf-8
 
 import urlparse
-import requests
 from requests_oauthlib import OAuth1
+from .httpclient import requests
 from .config import get_config
 from .log import lg
 from . import color

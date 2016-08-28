@@ -2,8 +2,8 @@
 
 import logging
 import argparse
-import requests
 from requests_oauthlib import OAuth1
+from .httpclient import requests
 from .auth import get_oauth_token
 from .config import init_config, get_config, ConfigError, update_oauth_token, configure_proxy
 from .utils import ObjectDict, unicode_format, quit, format_time
