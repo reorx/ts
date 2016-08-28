@@ -2,7 +2,6 @@
 
 import os
 import json
-from .utils import quit
 from . import color
 
 
@@ -11,6 +10,9 @@ default_config_json = """
 
 config_filename = '.ts.config.json'
 config_required_keys = ['consumer_key', 'consumer_secret']
+
+# global single config object
+_config_object = None
 
 
 class ConfigError(Exception):
@@ -23,27 +25,32 @@ def get_config_path():
 
 
 def get_config():
-    try:
-        with open(get_config_path(), 'r') as f:
-            content = f.read()
-    except IOError as e:
-        msg = (
-            'Could not open config file {}: {}\n'
-            'You can run `ts --init` to initialize a config file'
-        )
-        raise ConfigError(
-            msg.format(config_filename, e))
+    global _config_object
 
-    try:
-        config = json.loads(content)
-    except Exception as e:
-        raise ConfigError('Could not parse config file {}: {}'.format(config_filename, e))
+    if _config_object is None:
+        try:
+            with open(get_config_path(), 'r') as f:
+                content = f.read()
+        except IOError as e:
+            msg = (
+                'Could not open config file {}: {}\n'
+                'You can run `ts --init` to initialize a config file'
+            )
+            raise ConfigError(
+                msg.format(config_filename, e))
 
-    for i in config_required_keys:
-        if i not in config:
-            ConfigError('`{}` is required in config file: {}'.format(i, e))
+        try:
+            config = json.loads(content)
+        except Exception as e:
+            raise ConfigError('Could not parse config file {}: {}'.format(config_filename, e))
 
-    return config
+        for i in config_required_keys:
+            if i not in config:
+                ConfigError('`{}` is required in config file: {}'.format(i, e))
+
+        _config_object = config
+
+    return _config_object
 
 
 def init_config():
@@ -79,7 +86,7 @@ def configure_proxy(config):
         '888',
         'If you want to use socks proxy, see: '
         'http://docs.python-requests.org/en/master/user/advanced/#socks for detail.')
-    proxy = raw_input('Enter proxy address: ').strip()
+    proxy = raw_input('Enter proxy address (leave empty to remove): ').strip()
     if proxy:
         config['proxy'] = proxy
     else:
