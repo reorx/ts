@@ -51,7 +51,8 @@ Search options:
 
 Display options:
   --link            append link with tweet
-  -d, --debug       enable debug log
+  -d                enable debug log
+  -dd               debug deeper (more verbose)
 
 Other options:
   --init            init config file
@@ -59,3 +60,12 @@ Other options:
   --config {proxy}  config ts, support arguments: `proxy`
   -h, --help        show this help message and exit
 ```
+
+## Proxy
+
+ts supports proxying, you can set proxy by run ``ts --config proxy``,
+a proxy address is something like `http://localhost:1000` or `https://user:pass@fast.proxy.com`.
+
+Note that by default ts only supports HTTP(S) proxying, if you want to use socks5 proxy,
+you'll need to install `requests[socks]` before using it. For more information see
+[requests document](http://docs.python-requests.org/en/master/user/advanced/#socks).
