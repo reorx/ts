@@ -139,18 +139,28 @@ def show_tweet(d, link=False):
 
 def main():
     # the `formatter_class` can make description & epilog show multiline
-    parser = argparse.ArgumentParser(description="Twitter Search CLI", epilog="", formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser = argparse.ArgumentParser(
+        description="Twitter Search CLI",
+        epilog="",
+        add_help=False,
+        formatter_class=argparse.RawDescriptionHelpFormatter)
 
-    # arguments
-    parser.add_argument('query', metavar="QUERY", type=str, nargs='?', help="search query, see: https://dev.twitter.com/rest/public/search")
+    # search option group
+    search_group = parser.add_argument_group('Search options')
+    search_group.add_argument('query', metavar="QUERY", type=str, nargs='?', help="search query, see: https://dev.twitter.com/rest/public/search")
+    search_group.add_argument('-c', metavar="COUNT", type=int, default=50, help="set result number, by default it's 50")
+    search_group.add_argument('-l', metavar="LANG", type=str, help="set search language (en, zh-cn), see: https://dev.twitter.com/rest/reference/get/help/languages")
 
-    # options
-    parser.add_argument('--init', action='store_true', help="init config file")
-    parser.add_argument('-a', '--auth', action='store_true', help="make authentication with twitter")
-    parser.add_argument('-c', '--count', type=int, default=50, help="result count")
-    parser.add_argument('-l', '--lang', type=str, help="filter tweet language")
-    parser.add_argument('--link', action='store_true', help="append link with tweet")
-    parser.add_argument('-d', '--debug', action='store_true', help="enable debug log")
+    # display group
+    display_group = parser.add_argument_group('Display options')
+    display_group.add_argument('--link', action='store_true', help="append link with tweet")
+    display_group.add_argument('-d', '--debug', action='store_true', help="enable debug log")
+
+    # others
+    other_group = parser.add_argument_group('Other options')
+    other_group.add_argument('--init', action='store_true', help="init config file")
+    other_group.add_argument('--auth', action='store_true', help="make authentication with twitter")
+    other_group.add_argument('-h', '--help', action='help', help="show this help message and exit")
 
     args = parser.parse_args()
 
