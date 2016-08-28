@@ -54,7 +54,9 @@ def get_config():
 
 
 def init_config():
-    print 'Get the TweetDeck consumer key pairs at https://gist.github.com/mariotaku/5465786 (or use any other one if you are confident)'
+    print 'Get the {} consumer key pairs at {} (or use any other one if you are confident)'.format(
+        color.blue_hl('TweetDeck'),
+        color.blue(color.underline('https://gist.github.com/mariotaku/5465786')))
     ckey = raw_input('Enter consumer_key: ')
     csecret = raw_input('Enter consumer_secret: ')
     d = {

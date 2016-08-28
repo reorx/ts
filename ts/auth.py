@@ -37,8 +37,8 @@ def get_oauth_token():
              request_token['oauth_token'], request_token['oauth_token_secret'])
 
     # Step 2: Redirect to the provider
-    print color.blue('Go to the following link in your browser:')
-    print color.underline('%s?oauth_token=%s' % (authorize_url, request_token['oauth_token']))
+    print 'Go to the following link in your browser:'
+    print color.blue(color.underline('%s?oauth_token=%s' % (authorize_url, request_token['oauth_token'])))
     print
 
     verifier = raw_input('Enter PIN: ')

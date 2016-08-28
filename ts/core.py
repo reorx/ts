@@ -183,10 +183,13 @@ def main():
         quit(str(e))
     lg.debug('config: {}'.format(config))
 
-    # --auth
-    if args.auth or ('oauth_token' not in config or 'oauth_token_secret' not in config):
+    def do_auth():
         otoken, osecret = get_oauth_token()
         update_oauth_token(config, otoken, osecret)
+
+    # --auth
+    if args.auth:
+        do_auth()
         quit(None, 0)
 
     # --config
@@ -199,6 +202,9 @@ def main():
     # Search
     if not args.query:
         quit('Please enter a QUERY', 1)
+
+    if 'oauth_token' not in config or 'oauth_token_secret' not in config:
+        do_auth()
 
     api = TwitterAPI(
         config['consumer_key'], config['consumer_secret'],
