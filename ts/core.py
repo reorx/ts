@@ -49,7 +49,7 @@ class TwitterAPI(object):
         return resp
 
 
-def show_search_result(data):
+def show_search_result(data, link=False):
     """
     {
         "modules": [
@@ -70,10 +70,10 @@ def show_search_result(data):
     # print json.dumps(data)
     for i in data['modules']:
         if 'status' in i:
-            show_tweet(i['status'])
+            show_tweet(i['status'], link=link)
 
 
-def show_tweet(d):
+def show_tweet(d, link=False):
     """
     {
         "data": {
@@ -128,6 +128,12 @@ def show_tweet(d):
         screen_name=color.blue(u.screen_name),
         text=t.text,
     )
+
+    if link:
+        url = u'https://twitter.com/{screen_name}/status/{id}'.format(
+            screen_name=u.screen_name,
+            id=t.id)
+        s = u'{} {}'.format(s, color.underline(color.fg256('999', url)))
     print s.encode('utf8')
 
 
@@ -143,7 +149,7 @@ def main():
     parser.add_argument('-a', '--auth', action='store_true', help="make authentication with twitter")
     parser.add_argument('-c', '--count', type=int, default=50, help="result count")
     parser.add_argument('-l', '--lang', type=str, help="filter tweet language")
-    parser.add_argument('--link', action='store_true', help="append link with tweet (not implemented)")
+    parser.add_argument('--link', action='store_true', help="append link with tweet")
     parser.add_argument('-d', '--debug', action='store_true', help="enable debug log")
 
     args = parser.parse_args()
@@ -173,5 +179,8 @@ def main():
         config['consumer_key'], config['consumer_secret'],
         config['oauth_token'], config['oauth_token_secret'])
 
-    resp = api.search(args.query, count=args.count, lang=args.lang)
-    show_search_result(resp.json())
+    resp = api.search(
+        args.query,
+        count=args.count,
+        lang=args.lang)
+    show_search_result(resp.json(), link=args.link)
