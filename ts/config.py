@@ -2,6 +2,8 @@
 
 import os
 import json
+from .utils import quit
+from . import color
 
 
 default_config_json = """
@@ -68,4 +70,21 @@ def update_oauth_token(config, otoken, osecret):
     config['oauth_token'] = otoken
     config['oauth_token_secret'] = osecret
     write_config(config)
-    print 'Config file updated'
+    print 'Config oauth token updated'
+
+
+def configure_proxy(config):
+    print 'Set proxy address, format: ' + color.underline(color.blue('http[s]://[user][:pass]<address>:<port>'))
+    print color.fg256(
+        '888',
+        'If you want to use socks proxy, see: '
+        'http://docs.python-requests.org/en/master/user/advanced/#socks for detail.')
+    proxy = raw_input('Enter proxy address: ').strip()
+    if proxy:
+        config['proxy'] = proxy
+    else:
+        print 'Remove proxy in config'
+        if 'proxy' in config:
+            del config['proxy']
+    write_config(config)
+    print 'Config proxy updated'

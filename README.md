@@ -37,21 +37,25 @@ Here are some common search query examples:
 For more options please see `ts -h`:
 
 ```
-usage: ts [-h] [--init] [-a] [-c COUNT] [-l LANG] [--link] [-d] [QUERY]
+usage: ts [-c COUNT] [-l LANG] [--link] [-d] QUERY
+       ts [--init|--auth|--config CONFIG] [-d]
 
 Twitter Search CLI
 
-positional arguments:
-  QUERY                 search query, see:
-                        https://dev.twitter.com/rest/public/search
+Search options:
+  QUERY             search query, see:
+                    https://dev.twitter.com/rest/public/search
+  -c COUNT          set result number, by default it's 50
+  -l LANG           set search language (en, zh-cn), see:
+                    https://dev.twitter.com/rest/reference/get/help/languages
 
-optional arguments:
-  -h, --help            show this help message and exit
-  --init                init config file
-  -a, --auth            make authentication with twitter
-  -c COUNT, --count COUNT
-                        result count
-  -l LANG, --lang LANG  filter tweet language
-  --link                append link with tweet (not implemented)
-  -d, --debug           enable debug log
+Display options:
+  --link            append link with tweet
+  -d, --debug       enable debug log
+
+Other options:
+  --init            init config file
+  --auth            make authentication with twitter
+  --config {proxy}  config ts, support arguments: `proxy`
+  -h, --help        show this help message and exit
 ```

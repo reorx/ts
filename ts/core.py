@@ -5,7 +5,7 @@ import argparse
 import requests
 from requests_oauthlib import OAuth1
 from .auth import get_oauth_token
-from .config import init_config, get_config, ConfigError, update_oauth_token
+from .config import init_config, get_config, ConfigError, update_oauth_token, configure_proxy
 from .utils import ObjectDict, unicode_format, quit, format_time
 from .log import lg
 from . import color
@@ -143,6 +143,7 @@ def main():
         description="Twitter Search CLI",
         epilog="",
         add_help=False,
+        usage='%(prog)s [-c COUNT] [-l LANG] [--link] [-d] QUERY\n       %(prog)s [--init|--auth|--config CONFIG] [-d]',
         formatter_class=argparse.RawDescriptionHelpFormatter)
 
     # search option group
@@ -160,30 +161,43 @@ def main():
     other_group = parser.add_argument_group('Other options')
     other_group.add_argument('--init', action='store_true', help="init config file")
     other_group.add_argument('--auth', action='store_true', help="make authentication with twitter")
+    other_group.add_argument('--config', type=str, nargs=1, choices=['proxy'], help="config ts, support arguments: `proxy`")
     other_group.add_argument('-h', '--help', action='help', help="show this help message and exit")
 
     args = parser.parse_args()
 
+    # Debug
     if args.debug:
         logging.basicConfig(level=logging.DEBUG)
 
+    # Others
+    # --init
     if args.init:
         init_config()
-        quit('', 0)
+        quit(None, 0)
 
     try:
         config = get_config()
     except ConfigError as e:
         quit(str(e))
-
     lg.debug('config: {}'.format(config))
 
+    # --auth
     if args.auth or ('oauth_token' not in config or 'oauth_token_secret' not in config):
         otoken, osecret = get_oauth_token()
         update_oauth_token(config, otoken, osecret)
+        quit(None, 0)
 
+    # --config
+    if args.config:
+        conf_key = args.config[0]
+        if conf_key == 'proxy':
+            configure_proxy(config)
+        quit(None, 0)
+
+    # Search
     if not args.query:
-        quit('', 0)
+        quit('Please enter a QUERY', 1)
 
     api = TwitterAPI(
         config['consumer_key'], config['consumer_secret'],

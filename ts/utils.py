@@ -7,6 +7,11 @@ from dateutil import tz, parser
 PY3 = sys.version_info >= (3,)
 
 
+def request():
+    # requests.get(url, proxies={'https': 'http://localhost:1235'})
+    pass
+
+
 def to_unicode(value):
     """Converts a string argument to a unicode string.
 
@@ -29,7 +34,8 @@ def unicode_format(fmt, **kwargs):
 
 
 def quit(s, code=1):
-    print s
+    if s is not None:
+        print s
     sys.exit(code)
 
 
