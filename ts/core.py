@@ -6,7 +6,7 @@ from requests_oauthlib import OAuth1
 from .httpclient import requests
 from .auth import get_oauth_token
 from .config import init_config, get_config, ConfigError, update_oauth_token, configure_proxy
-from .utils import ObjectDict, unicode_format, quit, format_time
+from .utils import ObjectDict, unicode_format, quit, format_time, configure_logging
 from .log import lg
 from . import color
 
@@ -149,13 +149,14 @@ def main():
     # search option group
     search_group = parser.add_argument_group('Search options')
     search_group.add_argument('query', metavar="QUERY", type=str, nargs='?', help="search query, see: https://dev.twitter.com/rest/public/search")
-    search_group.add_argument('-c', metavar="COUNT", type=int, default=50, help="set result number, by default it's 50")
-    search_group.add_argument('-l', metavar="LANG", type=str, help="set search language (en, zh-cn), see: https://dev.twitter.com/rest/reference/get/help/languages")
+    search_group.add_argument('-c', dest='count', metavar="COUNT", type=int, default=50, help="set result number, by default it's 50")
+    search_group.add_argument('-l', dest='lang', metavar="LANG", type=str, help="set search language (en, zh-cn), see: https://dev.twitter.com/rest/reference/get/help/languages")
 
     # display group
     display_group = parser.add_argument_group('Display options')
     display_group.add_argument('--link', action='store_true', help="append link with tweet")
-    display_group.add_argument('-d', '--debug', action='store_true', help="enable debug log")
+    display_group.add_argument('-d', action='store_true', help="enable debug log")
+    display_group.add_argument('-dd', action='store_true', help="debug deeper (more verbose)")
 
     # others
     other_group = parser.add_argument_group('Other options')
@@ -167,8 +168,8 @@ def main():
     args = parser.parse_args()
 
     # Debug
-    if args.debug:
-        logging.basicConfig(level=logging.DEBUG)
+    if args.d or args.dd:
+        configure_logging(level='DEBUG', verbose=args.dd)
 
     # Others
     # --init

@@ -1,15 +1,11 @@
 # coding: utf-8
 
 import sys
+import logging.config
 from dateutil import tz, parser
 
 
 PY3 = sys.version_info >= (3,)
-
-
-def request():
-    # requests.get(url, proxies={'https': 'http://localhost:1235'})
-    pass
 
 
 def to_unicode(value):
@@ -24,6 +20,41 @@ def to_unicode(value):
         if isinstance(value, str):
             return value.decode("utf-8")
         return unicode(value)
+
+
+def configure_logging(level='INFO', verbose=False):
+    dep_logger = {
+        'level': level,
+    }
+    if not verbose:
+        dep_logger['level'] = 'CRITICAL'
+
+    logconf = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        'loggers': {
+            '': {
+                'handlers': ['stream'],
+                'level': level,
+            },
+            'requests_oauthlib': dep_logger,
+            'oauthlib': dep_logger,
+            'requests': dep_logger,
+        },
+        'handlers': {
+            'stream': {
+                'class': 'logging.StreamHandler',
+                'formatter': 'common',
+            },
+        },
+        'formatters': {
+            'common': {
+                'format': '[%(name)s] [%(levelname)s %(asctime)s] %(message)s',
+                'datefmt': '%H:%M:%S'
+            },
+        },
+    }
+    logging.config.dictConfig(logconf)
 
 
 def unicode_format(fmt, **kwargs):
