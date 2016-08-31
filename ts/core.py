@@ -7,7 +7,7 @@ from .auth import get_oauth_token
 from .config import init_config, get_config, ConfigError, update_oauth_token, configure_proxy
 from .utils import ObjectDict, unicode_format, quit, format_time, configure_logging
 from .log import lg
-from . import color
+from . import __version__, color
 
 
 class TwitterAPI(object):
@@ -162,6 +162,7 @@ def main():
     other_group.add_argument('--init', action='store_true', help="init config file")
     other_group.add_argument('--auth', action='store_true', help="make authentication with twitter")
     other_group.add_argument('--config', type=str, nargs=1, choices=['proxy'], help="config ts, support arguments: `proxy`")
+    other_group.add_argument('--version', action='store_true', help="show version number and exit")
     other_group.add_argument('-h', '--help', action='help', help="show this help message and exit")
 
     args = parser.parse_args()
@@ -173,6 +174,11 @@ def main():
     lg.debug('args:%s', args)
 
     # Others
+    # --version
+    if args.version:
+        print 'ts {}'.format(__version__)
+        quit(None, 0)
+
     # --init
     if args.init:
         init_config()
