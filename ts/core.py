@@ -1,6 +1,5 @@
 # coding: utf-8
 
-import logging
 import argparse
 from requests_oauthlib import OAuth1
 from .httpclient import requests
@@ -170,6 +169,8 @@ def main():
     # Debug
     if args.d or args.dd:
         configure_logging(level='DEBUG', verbose=args.dd)
+
+    lg.debug('args:%s', args)
 
     # Others
     # --init

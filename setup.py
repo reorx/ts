@@ -4,8 +4,17 @@
 from setuptools import setup, find_packages
 
 
-# Use semantic versioning: MAJOR.MINOR.PATCH
-version = '0.4.1'
+package_name = 'ts'
+
+
+def get_version():
+    import ast
+
+    """Return version string."""
+    with open(package_name + '/__init__.py') as input_file:
+        for line in input_file:
+            if line.startswith('__version__'):
+                return ast.parse(line).body[0].value.s
 
 
 def get_requires():
@@ -27,8 +36,8 @@ def get_long_description():
 
 setup(
     # license='License :: OSI Approved :: MIT License',
-    name='ts',
-    version=version,
+    name=package_name,
+    version=get_version(),
     author='reorx',
     author_email='novoreorx@gmail.com',
     description='Twitter Search CLI',

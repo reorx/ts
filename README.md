@@ -16,11 +16,11 @@ Before actual usage, you need to initialize config file first:
     ts --init
 
 The first time you run ts, it will guide you through an OAuth authentication process.
-The tokens will be stored at `~/.ts.config.json`, any time you want to, run:
+The tokens will be stored at `~/.ts.config.json`, any time you want refresh the tokens, run:
 
-    ts -a
+    ts --auth
 
-to make authentication again and update the tokens.
+to make authentication again and update the tokens in config.
 
 The search syntax is the same as [Twitter Web Search](https://twitter.com/search-home) or
 [Twitter Search API](https://dev.twitter.com/rest/public/search).
@@ -34,7 +34,7 @@ Here are some common search query examples:
 
         ts '#Hearthstone to:bdbrode'
 
-For more options please see `ts -h`:
+Run `ts -h` to see complete usage instructions:
 
 ```
 usage: ts [-c COUNT] [-l LANG] [--link] [-d] QUERY
