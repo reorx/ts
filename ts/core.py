@@ -5,8 +5,8 @@ from requests_oauthlib import OAuth1
 from .httpclient import requests
 from .auth import get_oauth_token
 from .config import init_config, get_config, ConfigError, update_oauth_token, configure_proxy
-from .utils import ObjectDict, unicode_format, quit, format_time, configure_logging
-from .log import lg
+from .utils import ObjectDict, unicode_format, quit, format_time, configure_logging, unescape_html
+from .log import lg, requests_lg
 from . import __version__, color
 
 
@@ -125,7 +125,7 @@ def show_tweet(d, link=False):
         fmt,
         created_at=color.fg256('aaa', format_time(t.created_at)),
         screen_name=color.blue(u.screen_name),
-        text=t.text,
+        text=unescape_html(t.text),
     )
 
     if link:
@@ -221,4 +221,6 @@ def main():
         args.query,
         count=args.count,
         lang=args.lang)
+    requests_lg.debug('response content: %s', resp.content)
+
     show_search_result(resp.json(), link=args.link)

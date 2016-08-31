@@ -3,6 +3,7 @@
 import sys
 import logging.config
 from dateutil import tz, parser
+from HTMLParser import HTMLParser
 
 
 PY3 = sys.version_info >= (3,)
@@ -20,6 +21,13 @@ def to_unicode(value):
         if isinstance(value, str):
             return value.decode("utf-8")
         return unicode(value)
+
+
+html_parser = HTMLParser()
+
+
+def unescape_html(s):
+    return html_parser.unescape(s)
 
 
 def configure_logging(level='INFO', verbose=False):
