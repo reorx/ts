@@ -120,12 +120,17 @@ def show_tweet(d, link=False):
     """
     t = ObjectDict(d['data'])
     u = ObjectDict(t['user'])
+
+    # text may contain carriage returns `\r` which will not display on terminal
+    # properly, replace them with `\n` instead
+    text = t.text.replace(u'\r\n', u'\n').replace(u'\r', u'\n')
+
     fmt = u'{created_at} {screen_name}  {text}'
     s = unicode_format(
         fmt,
         created_at=color.fg256('aaa', format_time(t.created_at)),
         screen_name=color.blue(u.screen_name),
-        text=unescape_html(t.text),
+        text=unescape_html(text),
     )
 
     if link:
