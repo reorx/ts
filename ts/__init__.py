@@ -1,4 +1,4 @@
 # coding: utf-8
 
 # Use semantic versioning: MAJOR.MINOR.PATCH
-__version__ = '0.4.4'
+__version__ = '0.5.0'
