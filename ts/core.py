@@ -171,7 +171,7 @@ def search_query(api, query, count, lang, link):
     show_search_result(resp.json(), link=link)
 
 
-def download_medias(api, id, download_dir, auto_naming):
+def download_media(api, id, download_dir, auto_name):
     """
     {
         "extended_entities": {
@@ -227,14 +227,14 @@ def download_medias(api, id, download_dir, auto_naming):
             if not url:
                 print('Warning: no media_url_https or media_url in photo media')
                 continue
-            download_file(api, url, download_dir, get_filename(id, index, url, auto_naming))
+            download_file(api, url, download_dir, get_filename(id, index, url, auto_name))
             count += 1
         elif media_type == 'video':
             # get the biggest bitrate one
             vids = [i for i in media['video_info']['variants'] if 'bitrate' in i]
             vids.sort(key=lambda x: x['bitrate'], reverse=True)
             url = vids[0]['url']
-            download_file(api, url, download_dir, get_filename(id, index, url, auto_naming))
+            download_file(api, url, download_dir, get_filename(id, index, url, auto_name))
             count += 1
     if not count:
         print('No supported media found for tweet {}'.foramt(id))
@@ -259,12 +259,12 @@ def download_file(api, url, download_dir, filename):
             f.write(chunk)
 
 
-def get_filename(id, index, url, auto_naming):
+def get_filename(id, index, url, auto_name):
     parts = match_filename(url)
     if not parts:
         return make_filename(id, index)
     name, ext = parts
-    if auto_naming:
+    if auto_name:
         return make_filename(id, index, ext)
     else:
         return '{}.{}'.format(name, ext)
@@ -339,6 +339,12 @@ def main():
     display_group.add_argument('-d', action='store_true', help="enable debug log")
     display_group.add_argument('-dd', action='store_true', help="debug deeper (more verbose)")
 
+    # download images
+    img_group = parser.add_argument_group('Image options')
+    img_group.add_argument('--download-media', type=str, help="Download media by tweet id or url")
+    img_group.add_argument('--auto-name', action='store_true', help="Automatically generates downloaded file names, if not passed, name in the url will be used.")
+    img_group.add_argument('--download-dir', type=str, default=".", help="dir path to download media, by default it's current dir")
+
     # others
     other_group = parser.add_argument_group('Other options')
     other_group.add_argument('--init', action='store_true', help="init config file")
@@ -346,12 +352,6 @@ def main():
     other_group.add_argument('--config', type=str, nargs=1, choices=['proxy'], help="config ts, support arguments: `proxy`")
     other_group.add_argument('--version', action='store_true', help="show version number and exit")
     other_group.add_argument('-h', '--help', action='help', help="show this help message and exit")
-
-    # download images
-    img_group = parser.add_argument_group('Image options')
-    img_group.add_argument('--download-medias', type=str, help="Download medias by tweet id or url")
-    img_group.add_argument('--auto-naming', action='store_true', help="Name the downloaded files automatically, if not passed, name in the url will be used.")
-    img_group.add_argument('--download-dir', type=str, default=".", help="dir path to download medias, by default it's current dir")
 
     args = parser.parse_args()
 
@@ -402,14 +402,14 @@ def main():
             config['oauth_token'], config['oauth_token_secret'])
 
     # Download images
-    if args.download_medias:
-        id_or_url = args.download_medias
+    if args.download_media:
+        id_or_url = args.download_media
         if not TWEET_ID_REGEX.search(id_or_url):
             id_or_url = get_tweet_id_from_url(id_or_url)
         if not id_or_url:
-            print('Invalid id or url: {}'.format(args.download_medias))
+            print('Invalid id or url: {}'.format(args.download_media))
             sys.exit(1)
-        download_medias(get_api(), id_or_url, args.download_dir, args.auto_naming)
+        download_media(get_api(), id_or_url, args.download_dir, args.auto_name)
         return
 
     # Search
