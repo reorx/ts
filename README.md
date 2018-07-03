@@ -66,11 +66,11 @@ Here are some common search query examples:
 
 1. Find what a person had said:
 
-        ts 'from:NASA Elon Musk'
+       ts 'from:NASA Elon Musk'
 
 2. Find what people said to a person in a topic:
 
-        ts '#Hearthstone to:bdbrode'
+       ts '#Hearthstone to:bdbrode'
 
 ### Download Media in Tweet
 
@@ -81,14 +81,14 @@ See usage examples below:
 
 1. Download media (videos) to current directory:
 
-        ts --download-media 'https://twitter.com/iyasareru_d/status/1013023169408569344'
+       ts --download-media 'https://twitter.com/iyasareru_d/status/1013023169408569344'
 
-        ts --download-media 1013023169408569344
+       ts --download-media 1013023169408569344
 
 2. Download media (photos) to a specific path, using auto generated names:
 
-        ts --download-dir ~/Downloads --auto-name --download-media \
-            https://twitter.com/bangqiaoyan2018/status/1012941662937444357
+       ts --download-dir ~/Downloads --auto-name --download-media \
+           'https://twitter.com/bangqiaoyan2018/status/1012941662937444357'
 
 ## Proxy
 
