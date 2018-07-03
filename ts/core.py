@@ -2,10 +2,12 @@
 
 import os
 import re
+import sys
 import argparse
 
 from six.moves.urllib.parse import urlparse
 from requests_oauthlib import OAuth1
+
 from .httpclient import requests
 from .auth import get_oauth_token
 from .config import init_config, get_config, ConfigError, update_oauth_token, configure_proxy
@@ -287,6 +289,17 @@ def make_filename(id, index, ext=None):
     return s
 
 
+TWEET_ID_REGEX = re.compile(r'^(\d+)$')
+TWEET_URL_ID_REGEX = re.compile(r'\/(\d+)$')
+
+
+def get_tweet_id_from_url(url):
+    v = TWEET_URL_ID_REGEX.search(url)
+    if not v:
+        return None
+    return v.groups()[0]
+
+
 def main():
     # the `formatter_class` can make description & epilog show multiline
     parser = argparse.ArgumentParser(
@@ -318,7 +331,7 @@ def main():
 
     # download images
     img_group = parser.add_argument_group('Image options')
-    img_group.add_argument('--download-medias', type=str, help="Download medias by tweet id")
+    img_group.add_argument('--download-medias', type=str, help="Download medias by tweet id or url")
     img_group.add_argument('--auto-naming', action='store_true', help="Name the downloaded files automatically, if not passed, name in the url will be used.")
     img_group.add_argument('--download-dir', type=str, default=".", help="dir path to download medias, by default it's current dir")
 
@@ -372,7 +385,13 @@ def main():
 
     # Download images
     if args.download_medias:
-        download_medias(get_api(), args.download_medias, args.download_dir, args.auto_naming)
+        id_or_url = args.download_medias
+        if not TWEET_ID_REGEX.search(id_or_url):
+            id_or_url = get_tweet_id_from_url(id_or_url)
+        if not id_or_url:
+            print('Invalid id or url: {}'.format(args.download_medias))
+            sys.exit(1)
+        download_medias(get_api(), id_or_url, args.download_dir, args.auto_naming)
         return
 
     # Search
