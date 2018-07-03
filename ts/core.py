@@ -238,14 +238,20 @@ def download_medias(api, id, download_dir, auto_naming):
             count += 1
     if not count:
         print('No supported media found for tweet {}'.foramt(id))
+    else:
+        print('Done')
 
 
 def download_file(api, url, download_dir, filename):
-    print('Download url: {}'.format(url))
+    #print('Download url: {}'.format(url))
     print('Downloading {} to {}'.format(filename, download_dir))
     resp = api.request('get', url)
     if resp.status_code > 299:
         raise ResponseError('{} failed with {}: {}'.format(resp.status_code, resp.text))
+
+    content_len = resp.headers.get('Content-Length')
+    if content_len:
+        print('  size: {}'.format(bits_to_readable(float(content_len))))
 
     filepath = os.path.join(download_dir, filename)
     with open(filepath, 'wb') as f:
@@ -298,6 +304,18 @@ def get_tweet_id_from_url(url):
     if not v:
         return None
     return v.groups()[0]
+
+
+SIZE_UNIT = 1024
+
+
+def bits_to_readable(n):
+    k = n / SIZE_UNIT
+    if k > SIZE_UNIT:
+        m = k / SIZE_UNIT
+        return '{}M'.format(round(m, 1))
+    else:
+        return '{}K'.format(int(k))
 
 
 def main():
