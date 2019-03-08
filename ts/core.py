@@ -180,6 +180,28 @@ def download_media(api, id, download_dir, auto_name):
                     "type": "photo",
                     "media_url_https": "https://pbs.twimg.com/media/Dg6xAuuU8AETsx3.jpg",
                     "media_url": "http://pbs.twimg.com/media/Dg6xAuuU8AETsx3.jpg",
+                    "sizes": {
+                      "large": {
+                        "h": 2048,
+                        "resize": "fit",
+                        "w": 364
+                      },
+                      "small": {
+                        "h": 680,
+                        "resize": "fit",
+                        "w": 121
+                      },
+                      "medium": {
+                        "h": 1200,
+                        "resize": "fit",
+                        "w": 213
+                      },
+                      "thumb": {
+                        "h": 150,
+                        "resize": "crop",
+                        "w": 150
+                      }
+                    },
                     ...
                 },
                 {
@@ -223,11 +245,18 @@ def download_media(api, id, download_dir, auto_name):
     for index, media in enumerate(data['extended_entities']['media']):
         media_type = media['type']
         if media_type == 'photo':
-            url = media.get('media_url_https', media.get('media_url'))
+            raw_url = media.get('media_url_https', media.get('media_url'))
+            url = raw_url
+            sizes = media.get('sizes', [])
+            if sizes:
+                size_l = [(size, d['h']) for size, d in sizes.items()]
+                size_l = sorted(size_l, key=lambda x: x[1])
+                size = size_l[-1][0]
+                url = '{}:{}'.format(url, size)
             if not url:
                 print('Warning: no media_url_https or media_url in photo media')
                 continue
-            download_file(api, url, download_dir, get_filename(id, index, url, auto_name))
+            download_file(api, url, download_dir, get_filename(id, index, raw_url, auto_name))
             count += 1
         elif media_type == 'video':
             # get the biggest bitrate one
@@ -267,7 +296,7 @@ def get_filename(id, index, url, auto_name):
     if auto_name:
         return make_filename(id, index, ext)
     else:
-        return '{}.{}'.format(name, ext)
+        return '{}-{}.{}'.format(name, index, ext)
 
 
 FILENAME_REGEX = re.compile(r'([^\/]+)\.(\w+)$')
