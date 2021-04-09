@@ -20,7 +20,7 @@ def get_version():
 def get_requires():
     try:
         with open('requirements.txt', 'r') as f:
-            requires = [i for i in map(lambda x: x.strip(), f.readlines()) if i]
+            requires = [i for i in [x.strip() for x in f.readlines()] if i]
         return requires
     except IOError:
         return []

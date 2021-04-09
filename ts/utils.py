@@ -3,24 +3,7 @@
 import sys
 import logging.config
 from dateutil import tz, parser
-from HTMLParser import HTMLParser
-
-
-PY3 = sys.version_info >= (3,)
-
-
-def to_unicode(value):
-    """Converts a string argument to a unicode string.
-
-    If the argument is already a unicode string or None, it is returned
-    unchanged.  Otherwise it must be a byte string and is decoded as utf8.
-    """
-    if PY3:
-        return value
-    else:
-        if isinstance(value, str):
-            return value.decode("utf-8")
-        return unicode(value)
+from html.parser import HTMLParser
 
 
 html_parser = HTMLParser()
@@ -65,16 +48,9 @@ def configure_logging(level='INFO', verbose=False):
     logging.config.dictConfig(logconf)
 
 
-def unicode_format(fmt, **kwargs):
-    new_kwargs = {}
-    for k, v in kwargs.iteritems():
-        new_kwargs[k] = to_unicode(v)
-    return to_unicode(fmt).format(**new_kwargs)
-
-
 def quit(s, code=1):
     if s is not None:
-        print s
+        print(s)
     sys.exit(code)
 
 

@@ -54,18 +54,18 @@ def get_config():
 
 
 def init_config():
-    print 'Get the {} consumer key pairs at {} (or use any other one if you are confident)'.format(
+    print('Get the {} consumer key pairs at {} (or use any other one if you are confident)'.format(
         color.blue_hl('TweetDeck'),
-        color.blue(color.underline('https://gist.github.com/mariotaku/5465786')))
-    ckey = raw_input('Enter consumer_key: ')
-    csecret = raw_input('Enter consumer_secret: ')
+        color.blue(color.underline('https://gist.github.com/mariotaku/5465786'))))
+    ckey = input('Enter consumer_key: ')
+    csecret = input('Enter consumer_secret: ')
     d = {
         'consumer_key': ckey,
         'consumer_secret': csecret,
     }
 
     filepath = write_config(d)
-    print 'Config was wrote to {}'.format(filepath)
+    print('Config was wrote to {}'.format(filepath))
 
 
 def write_config(d):
@@ -79,21 +79,21 @@ def update_oauth_token(config, otoken, osecret):
     config['oauth_token'] = otoken
     config['oauth_token_secret'] = osecret
     write_config(config)
-    print 'Config oauth token updated'
+    print('Config oauth token updated')
 
 
 def configure_proxy(config):
-    print 'Set proxy address, format: ' + color.underline(color.blue('http[s]://[user][:pass]<address>:<port>'))
-    print color.fg256(
+    print('Set proxy address, format: ' + color.underline(color.blue('http[s]://[user][:pass]<address>:<port>')))
+    print(color.fg256(
         '888',
         'If you want to use socks proxy, see: '
-        'http://docs.python-requests.org/en/master/user/advanced/#socks for detail.')
-    proxy = raw_input('Enter proxy address (leave empty to remove): ').strip()
+        'http://docs.python-requests.org/en/master/user/advanced/#socks for detail.'))
+    proxy = input('Enter proxy address (leave empty to remove): ').strip()
     if proxy:
         config['proxy'] = proxy
     else:
-        print 'Remove proxy in config'
+        print('Remove proxy in config')
         if 'proxy' in config:
             del config['proxy']
     write_config(config)
-    print 'Config proxy updated'
+    print('Config proxy updated')

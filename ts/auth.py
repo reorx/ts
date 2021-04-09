@@ -1,6 +1,6 @@
 # coding: utf-8
 
-import urlparse
+import urllib.parse
 from requests_oauthlib import OAuth1
 from .httpclient import requests
 from .config import get_config
@@ -32,17 +32,17 @@ def get_oauth_token():
     if resp.status_code != 200:
         raise OauthError(
             'Invalid response on request token {} {}.'.format(resp.status_code, resp.content))
-    request_token = dict(urlparse.parse_qsl(resp.content))
+    request_token = dict(urllib.parse.parse_qsl(resp.content))
     lg.debug('Request token (oauth_token, oauth_token_secret): %s, %s',
              request_token['oauth_token'], request_token['oauth_token_secret'])
 
     # Step 2: Redirect to the provider
-    print 'Go to the following link in your browser:'
-    print color.blue(color.underline('%s?oauth_token=%s' % (authorize_url, request_token['oauth_token'])))
-    print
+    print('Go to the following link in your browser:')
+    print(color.blue(color.underline('%s?oauth_token=%s' % (authorize_url, request_token['oauth_token']))))
+    print()
 
-    verifier = raw_input('Enter PIN: ')
-    print
+    verifier = input('Enter PIN: ')
+    print()
 
     # Step 3: get access token & secret
     oauth = OAuth1(
@@ -57,13 +57,13 @@ def get_oauth_token():
         raise OauthError(
             'Invalid response on access token {} {}.'.format(resp.status_code, resp.content))
 
-    access_token = dict(urlparse.parse_qsl(resp.content))
+    access_token = dict(urllib.parse.parse_qsl(resp.content))
     access_key = access_token['oauth_token']
     access_secret = access_token['oauth_token_secret']
 
-    print 'Access Token:'
-    print '  - oauth_token        = %s' % access_key
-    print '  - oauth_token_secret = %s' % access_secret
-    print
+    print('Access Token:')
+    print('  - oauth_token        = %s' % access_key)
+    print('  - oauth_token_secret = %s' % access_secret)
+    print()
 
     return access_key, access_secret

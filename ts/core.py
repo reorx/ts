@@ -11,7 +11,7 @@ from requests_oauthlib import OAuth1
 from .httpclient import requests
 from .auth import get_oauth_token
 from .config import init_config, get_config, ConfigError, update_oauth_token, configure_proxy
-from .utils import ObjectDict, unicode_format, quit, format_time, configure_logging, unescape_html
+from .utils import ObjectDict, quit, format_time, configure_logging, unescape_html
 from .log import lg, requests_lg
 from . import __version__, color
 
@@ -143,21 +143,20 @@ def show_tweet(d, link=False):
 
     # text may contain carriage returns `\r` which will not display on terminal
     # properly, replace them with `\n` instead
-    text = t.text.replace(u'\r\n', u'\n').replace(u'\r', u'\n')
+    text = t.text.replace('\r\n', '\n').replace('\r', '\n')
 
-    fmt = u'{created_at} {screen_name}  {text}'
-    s = unicode_format(
-        fmt,
+    fmt = '{created_at} {screen_name}  {text}'
+    s = fmt.format(
         created_at=color.fg256('aaa', format_time(t.created_at)),
         screen_name=color.blue(u.screen_name),
         text=unescape_html(text),
     )
 
     if link:
-        url = u'https://twitter.com/{screen_name}/status/{id}'.format(
+        url = 'https://twitter.com/{screen_name}/status/{id}'.format(
             screen_name=u.screen_name,
             id=t.id)
-        s = u'{} {}'.format(s, color.underline(color.fg256('999', url)))
+        s = '{} {}'.format(s, color.underline(color.fg256('999', url)))
     print(s.encode('utf8'))
 
 
@@ -249,7 +248,7 @@ def download_media(api, id, download_dir, auto_name):
             url = raw_url
             sizes = media.get('sizes', [])
             if sizes:
-                size_l = [(size, d['h']) for size, d in sizes.items()]
+                size_l = [(size, d['h']) for size, d in list(sizes.items())]
                 size_l = sorted(size_l, key=lambda x: x[1])
                 size = size_l[-1][0]
                 url = '{}:{}'.format(url, size)
@@ -276,7 +275,7 @@ def download_file(api, url, download_dir, filename):
     print('Downloading {} to {}'.format(filename, download_dir))
     resp = api.request('get', url)
     if resp.status_code > 299:
-        raise ResponseError('{} failed with {}: {}'.format(resp.status_code, resp.text))
+        raise ResponseError('{} failed with {}: {}'.format(url, resp.status_code, resp.text))
 
     content_len = resp.headers.get('Content-Length')
     if content_len:
